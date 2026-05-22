@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,9 +52,130 @@ public class AdmissionFormActivity extends AppCompatActivity {
 
         findViewById(R.id.btnNextAdmission).setOnClickListener(v -> {
 
+            if (etFirstName.getText().toString().trim().isEmpty()) {
+                etFirstName.setError("Required");
+                etFirstName.requestFocus();
+                return;
+            }
+
+            if (etMiddleName.getText().toString().trim().isEmpty()) {
+                etMiddleName.setError("Required");
+                etMiddleName.requestFocus();
+                return;
+            }
+
+            if (etLastName.getText().toString().trim().isEmpty()) {
+                etLastName.setError("Required");
+                etLastName.requestFocus();
+                return;
+            }
+
+            if (etBirthDate.getText().toString().trim().isEmpty()) {
+                etBirthDate.setError("Required");
+                etBirthDate.requestFocus();
+                return;
+            }
+
+            if (etPlaceBirth.getText().toString().trim().isEmpty()) {
+                etPlaceBirth.setError("Required");
+                etPlaceBirth.requestFocus();
+                return;
+            }
+
+            if (etHomeAddress.getText().toString().trim().isEmpty()) {
+                etHomeAddress.setError("Required");
+                etHomeAddress.requestFocus();
+                return;
+            }
+
+            if (etEmail.getText().toString().trim().isEmpty()) {
+                etEmail.setError("Required");
+                etEmail.requestFocus();
+                return;
+            }
+
+            if (etSchool.getText().toString().trim().isEmpty()) {
+                etSchool.setError("Required");
+                etSchool.requestFocus();
+                return;
+            }
+
+            if (etYearGraduated.getText().toString().trim().isEmpty()) {
+                etYearGraduated.setError("Required");
+                etYearGraduated.requestFocus();
+                return;
+            }
+
+            if (radioGroupGender.getCheckedRadioButtonId() == -1) {
+
+                Toast.makeText(
+                        AdmissionFormActivity.this,
+                        "Please select gender",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                return;
+            }
+
             Intent intent = new Intent(
                     AdmissionFormActivity.this,
                     SelectPhotoAdmissionActivity.class
+            );
+
+            intent.putExtra(
+                    "first_name",
+                    etFirstName.getText().toString().trim()
+            );
+
+            intent.putExtra(
+                    "middle_name",
+                    etMiddleName.getText().toString().trim()
+            );
+
+            intent.putExtra(
+                    "last_name",
+                    etLastName.getText().toString().trim()
+            );
+
+            intent.putExtra(
+                    "birth_date",
+                    etBirthDate.getText().toString().trim()
+            );
+
+            intent.putExtra(
+                    "place_birth",
+                    etPlaceBirth.getText().toString().trim()
+            );
+
+            intent.putExtra(
+                    "home_address",
+                    etHomeAddress.getText().toString().trim()
+            );
+
+            intent.putExtra(
+                    "email",
+                    etEmail.getText().toString().trim()
+            );
+
+            intent.putExtra(
+                    "school",
+                    etSchool.getText().toString().trim()
+            );
+
+            intent.putExtra(
+                    "year_graduated",
+                    etYearGraduated.getText().toString().trim()
+            );
+
+            int selectedGenderId =
+                    radioGroupGender.getCheckedRadioButtonId();
+
+            RadioButton selectedGender =
+                    findViewById(selectedGenderId);
+
+            intent.putExtra(
+                    "gender",
+                    selectedGender.getText().toString()
             );
 
             startActivity(intent);

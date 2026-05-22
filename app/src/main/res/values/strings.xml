@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Registrar-Office-Mobile-Document-Scanner-with-Archiving-System-MobileFrontEnd</string>
+    <string name="title">UEP Registrar Mobile Scanner</string>
+    <string name="FirstName">First Name:</string>
+    <string name="MiddleName">Middle Name:</string>
+    <string name="LastName">Last Name:</string>
+    <string name="DOB">Date of Birth:</string>
+    <string name="POB">Place of Birth:</string>
+    <string name="Gender">Gender:</string>
+    <string name="HomeAddress">Home Address:</string>
+    <string name="Email">E-mail Account:</string>
+    <string name="StudentID">Student ID:</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.example.registrar_office_mobile_document_scanner_with_archiving_system_mobilefrontend;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -27,7 +26,9 @@ public class SelectPhotoAdmissionActivity extends AppCompatActivity {
                                 RenameFileAdmissionActivity.class
                         );
 
+                        intent.putExtras(getIntent());
                         intent.putExtra("image_uri", uri.toString());
+
                         startActivity(intent);
                     }
                 }
@@ -38,6 +39,9 @@ public class SelectPhotoAdmissionActivity extends AppCompatActivity {
                     SelectPhotoAdmissionActivity.this,
                     CameraAdmissionActivity.class
             );
+
+            intent.putExtras(getIntent());
+
             startActivity(intent);
         });
 

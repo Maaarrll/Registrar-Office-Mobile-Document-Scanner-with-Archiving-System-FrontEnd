@@ -34,7 +34,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="UEP Registrar Mobile Scanner"
+                    android:text="@string/title"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -82,7 +82,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Student ID:"
+                        android:text="@string/StudentID"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
 
@@ -118,7 +118,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="First name:"
+                        android:text="@string/FirstName"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
 
@@ -152,7 +152,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Last Name:"
+                        android:text="@string/LastName"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
 

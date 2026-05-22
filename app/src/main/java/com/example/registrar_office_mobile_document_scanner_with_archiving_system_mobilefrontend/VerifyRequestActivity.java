@@ -38,6 +38,7 @@ public class VerifyRequestActivity extends AppCompatActivity {
                 "urgent_request",
                 false
         );
+        tvRequestType.setText("Request Type: " + requestType);
 
         tvUrgentRequest.setText(
                 "Urgent Request: " +

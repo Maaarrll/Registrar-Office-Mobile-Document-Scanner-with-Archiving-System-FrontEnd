@@ -34,7 +34,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="UEP Registrar Mobile Scanner"
+                    android:text="@string/title"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -91,7 +91,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="First Name:"
+                        android:text="@string/FirstName"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
 
@@ -107,7 +107,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Middle Name (if any):"
+                        android:text="@string/MiddleName"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
 
@@ -123,7 +123,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Last Name:"
+                        android:text="@string/LastName"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
 
@@ -139,7 +139,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Date of Birth:"
+                        android:text="@string/DOB"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
 
@@ -156,7 +156,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Place of Birth:"
+                        android:text="@string/POB"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
 
@@ -173,7 +173,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
-                        android:text="Gender:"
+                        android:text="@string/Gender"
                         android:textColor="@color/black"
                         android:textSize="12sp"/>
 
@@ -209,7 +209,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Home Address:"
+                        android:text="@string/HomeAddress"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
 
@@ -225,7 +225,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="E-mail account:"
+                        android:text="@string/Email"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
 
