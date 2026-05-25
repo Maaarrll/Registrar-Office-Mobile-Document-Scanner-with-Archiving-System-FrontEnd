@@ -149,6 +149,7 @@
                         android:layout_height="40dp"
                         android:background="@android:drawable/edit_text"
                         android:inputType="date"
+                        android:maxLength="10"
                         android:hint="01/01/2026"
                         android:padding="5dp" />
 

@@ -13,7 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 
 public class DocumentRequestFormActivity extends AppCompatActivity {
 
-    String loggedStudentId;
+    private String loggedStudentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,15 +25,20 @@ public class DocumentRequestFormActivity extends AppCompatActivity {
         EditText etMiddleName = findViewById(R.id.etMiddleName);
         EditText etLastName = findViewById(R.id.etLastName);
 
-        RadioGroup radioGroup = findViewById(R.id.radioGroupRequestType);
-
+        RadioGroup radioGroupRequestType = findViewById(R.id.radioGroupRequestType);
         CheckBox cbUrgent = findViewById(R.id.cbUrgent);
 
         loggedStudentId = getIntent().getStringExtra("student_id");
 
         findViewById(R.id.btnAutoFill).setOnClickListener(v -> {
-            if (loggedStudentId != null) {
+            if (loggedStudentId != null && !loggedStudentId.isEmpty()) {
                 etStudentId.setText(loggedStudentId);
+            } else {
+                Toast.makeText(
+                        DocumentRequestFormActivity.this,
+                        "No logged-in Student ID found",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         });
 
@@ -44,32 +49,42 @@ public class DocumentRequestFormActivity extends AppCompatActivity {
             String middleName = etMiddleName.getText().toString().trim();
             String lastName = etLastName.getText().toString().trim();
 
-            int selectedId = radioGroup.getCheckedRadioButtonId();
-
-            if (studentId.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
-
-                Toast.makeText(
-                        this,
-                        "Please fill out required fields",
-                        Toast.LENGTH_SHORT
-                ).show();
-
+            if (studentId.isEmpty()) {
+                etStudentId.setError("Student ID is required");
+                etStudentId.requestFocus();
                 return;
             }
 
-            if (selectedId == -1) {
+            if (studentId.length() != 6) {
+                etStudentId.setError("Student ID must be 6 digits");
+                etStudentId.requestFocus();
+                return;
+            }
 
+            if (firstName.isEmpty()) {
+                etFirstName.setError("First name is required");
+                etFirstName.requestFocus();
+                return;
+            }
+
+            if (lastName.isEmpty()) {
+                etLastName.setError("Last name is required");
+                etLastName.requestFocus();
+                return;
+            }
+
+            int selectedId = radioGroupRequestType.getCheckedRadioButtonId();
+
+            if (selectedId == -1) {
                 Toast.makeText(
-                        this,
+                        DocumentRequestFormActivity.this,
                         "Please select a request type",
                         Toast.LENGTH_SHORT
                 ).show();
-
                 return;
             }
 
             RadioButton selectedRadio = findViewById(selectedId);
-
             String requestType = selectedRadio.getText().toString();
 
             Intent intent = new Intent(
@@ -82,17 +97,12 @@ public class DocumentRequestFormActivity extends AppCompatActivity {
             intent.putExtra("middle_name", middleName);
             intent.putExtra("last_name", lastName);
             intent.putExtra("request_type", requestType);
-
-            intent.putExtra(
-                    "urgent_request",
-                    cbUrgent.isChecked()
-            );
+            intent.putExtra("urgent_request", cbUrgent.isChecked());
 
             startActivity(intent);
         });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 }

@@ -20,11 +20,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.btnStaff).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Staff module not implemented yet
-            }
+        findViewById(R.id.btnStaff).setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    MainActivity.this,
+                    StaffLoginActivity.class
+            );
+
+            startActivity(intent);
         });
     }
 }

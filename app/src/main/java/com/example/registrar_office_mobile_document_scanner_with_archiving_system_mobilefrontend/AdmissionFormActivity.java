@@ -6,6 +6,8 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.RadioButton;
 import android.widget.Toast;
+import android.text.Editable;
+import android.text.TextWatcher;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -28,6 +30,47 @@ public class AdmissionFormActivity extends AppCompatActivity {
         EditText etYearGraduated = findViewById(R.id.etYearGraduated);
 
         RadioGroup radioGroupGender = findViewById(R.id.radioGroupGender);
+
+        etBirthDate.addTextChangedListener(new TextWatcher() {
+
+            private boolean isFormatting;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (isFormatting) return;
+
+                isFormatting = true;
+
+                String input = s.toString().replace("/", "");
+
+                StringBuilder formatted = new StringBuilder();
+
+                for (int i = 0; i < input.length(); i++) {
+
+                    formatted.append(input.charAt(i));
+
+                    if ((i == 1 || i == 3) && i != input.length() - 1) {
+                        formatted.append("/");
+                    }
+                }
+
+                etBirthDate.setText(formatted.toString());
+                etBirthDate.setSelection(formatted.length());
+
+                isFormatting = false;
+            }
+        });
 
         findViewById(R.id.btnClearAll).setOnClickListener(v -> {
 

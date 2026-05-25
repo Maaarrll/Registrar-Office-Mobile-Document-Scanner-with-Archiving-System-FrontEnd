@@ -19,10 +19,9 @@ import java.io.InputStream;
 
 public class RenameFileAdmissionActivity extends AppCompatActivity {
 
-    ImageView ivPreview;
-    EditText etFileName;
-    Uri selectedImageUri;
-    Bitmap selectedBitmap;
+    private ImageView ivPreview;
+    private EditText etFileName;
+    private Uri selectedImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,18 +33,28 @@ public class RenameFileAdmissionActivity extends AppCompatActivity {
 
         String imageUriString = getIntent().getStringExtra("image_uri");
 
-        if (imageUriString != null) {
+        if (imageUriString != null && !imageUriString.isEmpty()) {
             selectedImageUri = Uri.parse(imageUriString);
             ivPreview.setImageURI(selectedImageUri);
+        } else {
+            Toast.makeText(this, "No image found. Please retake or select a photo.", Toast.LENGTH_LONG).show();
         }
 
         findViewById(R.id.btnAddPhoto).setOnClickListener(v -> {
             String fileName = etFileName.getText().toString().trim();
 
-            if (fileName.isEmpty()) {
-                Toast.makeText(this, "Please enter file name", Toast.LENGTH_SHORT).show();
+            if (selectedImageUri == null) {
+                Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            if (fileName.isEmpty()) {
+                etFileName.setError("File name is required");
+                etFileName.requestFocus();
+                return;
+            }
+
+            fileName = cleanFileName(fileName);
 
             try {
                 File pdfFile = createPdfFromImage(fileName);
@@ -58,7 +67,6 @@ public class RenameFileAdmissionActivity extends AppCompatActivity {
                 );
 
                 intent.putExtras(getIntent());
-
                 intent.putExtra("file_name", pdfFile.getName());
                 intent.putExtra("pdf_path", pdfFile.getAbsolutePath());
                 intent.putExtra("image_uri", selectedImageUri.toString());
@@ -76,9 +84,30 @@ public class RenameFileAdmissionActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
+    private String cleanFileName(String fileName) {
+        fileName = fileName.trim();
+
+        if (fileName.toLowerCase().endsWith(".pdf")) {
+            fileName = fileName.substring(0, fileName.length() - 4);
+        }
+
+        fileName = fileName.replaceAll("[\\\\/:*?\"<>|]", "_");
+
+        return fileName;
+    }
+
     private File createPdfFromImage(String fileName) throws Exception {
         InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+
+        if (inputStream == null) {
+            throw new Exception("Unable to read selected image");
+        }
+
         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+        if (bitmap == null) {
+            throw new Exception("Invalid image file");
+        }
 
         PdfDocument pdfDocument = new PdfDocument();
 
@@ -89,9 +118,7 @@ public class RenameFileAdmissionActivity extends AppCompatActivity {
         ).create();
 
         PdfDocument.Page page = pdfDocument.startPage(pageInfo);
-
         page.getCanvas().drawBitmap(bitmap, 0, 0, null);
-
         pdfDocument.finishPage(page);
 
         File folder = new File(getExternalFilesDir(null), "AdmissionPDFs");
@@ -108,6 +135,7 @@ public class RenameFileAdmissionActivity extends AppCompatActivity {
 
         pdfDocument.close();
         outputStream.close();
+        inputStream.close();
 
         return pdfFile;
     }
