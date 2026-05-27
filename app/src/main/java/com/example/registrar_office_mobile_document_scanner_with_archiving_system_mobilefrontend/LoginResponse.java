@@ -2,24 +2,43 @@ package com.example.registrar_office_mobile_document_scanner_with_archiving_syst
 
 public class LoginResponse {
 
-    private boolean success;
+    private String status;
+    private LoginData data;
     private String message;
-    private String token;
-    private String role;
 
-    public boolean isSuccess() {
-        return success;
+    public String getStatus() {
+        return status;
+    }
+
+    public LoginData getData() {
+        return data;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public String getToken() {
-        return token;
-    }
+    public static class LoginData {
 
-    public String getRole() {
-        return role;
+        private String access_token;
+        private String token_type;
+        private String role;
+
+        public String getAccess_token() {
+            return access_token;
+        }
+
+        public String getToken_type() {
+            return token_type;
+        }
+
+        public String getRole() {
+            return role;
+        }
+
+        // This keeps your old StaffLoginActivity code compatible
+        public String getToken() {
+            return access_token;
+        }
     }
 }

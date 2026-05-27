@@ -2,6 +2,7 @@ package com.example.registrar_office_mobile_document_scanner_with_archiving_syst
 
 import java.util.List;
 
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
@@ -12,19 +13,20 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Header;
 
 public interface ApiService {
 
     // Staff Login
     @POST("staff/login")
     Call<LoginResponse> staffLogin(
-            @Body LoginRequest request
+            @Body StaffLoginRequest request
     );
 
     // Student Login
     @POST("student/login")
     Call<LoginResponse> studentLogin(
-            @Body LoginRequest request
+            @Body StudentLoginRequest request
     );
 
     // Get Requests
@@ -43,5 +45,9 @@ public interface ApiService {
     Call<UploadResponse> uploadDocument(
             @Part MultipartBody.Part file,
             @Part("student_id") RequestBody studentId
+    );
+    @POST("admission/submit")
+    Call<ApiEnvelope<AdmissionSubmitData>> submitAdmission(
+            @Body AdmissionSubmitRequest request
     );
 }

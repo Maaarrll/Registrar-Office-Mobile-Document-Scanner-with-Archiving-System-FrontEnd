@@ -35,10 +35,8 @@ public class ProfilingSelectPhotoActivity extends AppCompatActivity {
         findViewById(R.id.btnTakePhoto).setOnClickListener(v -> {
             Intent intent = new Intent(
                     ProfilingSelectPhotoActivity.this,
-                    DocumentScannerActivity.class
+                    ProfilingCameraActivity.class
             );
-
-            intent.putExtra("scanner_mode", "profiling");
 
             startActivity(intent);
         });

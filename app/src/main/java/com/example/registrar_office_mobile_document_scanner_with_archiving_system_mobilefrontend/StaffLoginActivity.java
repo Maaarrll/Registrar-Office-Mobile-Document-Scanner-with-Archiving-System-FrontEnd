@@ -8,6 +8,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class StaffLoginActivity extends AppCompatActivity {
 
     EditText etStaffId, etStaffPassword;
@@ -36,43 +40,89 @@ public class StaffLoginActivity extends AppCompatActivity {
                 return;
             }
 
-            if (staffId.equals("STAFF001") && password.equals("admin123")) {
+            ApiService apiService =
+                    ApiClient.getClient().create(ApiService.class);
 
-                SessionManager sessionManager =
-                        new SessionManager(StaffLoginActivity.this);
+            StaffLoginRequest loginRequest =
+                    new StaffLoginRequest(staffId, password);
 
-                sessionManager.saveLoginSession(
-                        "fake-token-for-now",
-                        "staff",
-                        staffId
-                );
+            apiService.staffLogin(loginRequest).enqueue(new Callback<LoginResponse>() {
+                @Override
+                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
 
-                Toast.makeText(
-                        StaffLoginActivity.this,
-                        "Staff login successful",
-                        Toast.LENGTH_SHORT
-                ).show();
+                        LoginResponse loginResponse = response.body();
 
-                Intent intent = new Intent(
-                        StaffLoginActivity.this,
-                        StaffOptionsActivity.class
-                );
+                        if ("success".equals(loginResponse.getStatus())) {
 
-                intent.putExtra("staff_id", staffId);
+                            String token = loginResponse.getData().getToken();
+                            String role = "staff";
 
-                startActivity(intent);
-                finish();
+                            SessionManager sessionManager =
+                                    new SessionManager(StaffLoginActivity.this);
 
-            } else {
+                            sessionManager.saveLoginSession(
+                                    token,
+                                    role,
+                                    staffId
+                            );
 
-                Toast.makeText(
-                        StaffLoginActivity.this,
-                        "Invalid Staff ID or Password",
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
+                            Toast.makeText(
+                                    StaffLoginActivity.this,
+                                    "Staff login successful",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                            Intent intent = new Intent(
+                                    StaffLoginActivity.this,
+                                    StaffOptionsActivity.class
+                            );
+
+                            intent.setFlags(
+                                    Intent.FLAG_ACTIVITY_NEW_TASK |
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            );
+
+                            startActivity(intent);
+                            finish();
+
+                        } else {
+                            Toast.makeText(
+                                    StaffLoginActivity.this,
+                                    loginResponse.getMessage(),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+
+                    } else {
+                        String errorMessage = "Invalid Staff ID or Password";
+
+                        try {
+                            if (response.errorBody() != null) {
+                                errorMessage = response.errorBody().string();
+                            }
+                        } catch (Exception e) {
+                            errorMessage = e.getMessage();
+                        }
+
+                        Toast.makeText(
+                                StaffLoginActivity.this,
+                                errorMessage,
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<LoginResponse> call, Throwable t) {
+                    Toast.makeText(
+                            StaffLoginActivity.this,
+                            "Login failed: " + t.getMessage(),
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+            });
         });
-
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());

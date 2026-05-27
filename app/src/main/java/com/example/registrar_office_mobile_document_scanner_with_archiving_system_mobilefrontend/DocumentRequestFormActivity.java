@@ -13,33 +13,40 @@ import androidx.appcompat.widget.Toolbar;
 
 public class DocumentRequestFormActivity extends AppCompatActivity {
 
-    private String loggedStudentId;
+    private EditText etStudentId;
+    private EditText etFirstName;
+    private EditText etMiddleName;
+    private EditText etLastName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document_request_form);
 
-        EditText etStudentId = findViewById(R.id.etStudentId);
-        EditText etFirstName = findViewById(R.id.etFirstName);
-        EditText etMiddleName = findViewById(R.id.etMiddleName);
-        EditText etLastName = findViewById(R.id.etLastName);
+        etStudentId = findViewById(R.id.etStudentId);
+        etFirstName = findViewById(R.id.etFirstName);
+        etMiddleName = findViewById(R.id.etMiddleName);
+        etLastName = findViewById(R.id.etLastName);
 
         RadioGroup radioGroupRequestType = findViewById(R.id.radioGroupRequestType);
         CheckBox cbUrgent = findViewById(R.id.cbUrgent);
 
-        loggedStudentId = getIntent().getStringExtra("student_id");
-
         findViewById(R.id.btnAutoFill).setOnClickListener(v -> {
-            if (loggedStudentId != null && !loggedStudentId.isEmpty()) {
-                etStudentId.setText(loggedStudentId);
-            } else {
-                Toast.makeText(
-                        DocumentRequestFormActivity.this,
-                        "No logged-in Student ID found",
-                        Toast.LENGTH_SHORT
-                ).show();
+            String studentId = etStudentId.getText().toString().trim();
+
+            if (studentId.isEmpty()) {
+                etStudentId.setError("Enter Student ID first");
+                etStudentId.requestFocus();
+                return;
             }
+
+            if (studentId.length() != 6) {
+                etStudentId.setError("Student ID must be 6 digits");
+                etStudentId.requestFocus();
+                return;
+            }
+
+            autoFillStudentDetails(studentId);
         });
 
         findViewById(R.id.btnSave).setOnClickListener(v -> {
@@ -104,5 +111,57 @@ public class DocumentRequestFormActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
+    }
+
+    private void autoFillStudentDetails(String studentId) {
+
+        if (studentId.equals("234418")) {
+
+            etFirstName.setText("Paolo Leandro");
+            etMiddleName.setText("Loverita");
+            etLastName.setText("Pinca");
+
+            Toast.makeText(
+                    this,
+                    "Student details found",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+        } else if (studentId.equals("202455")) {
+
+            etFirstName.setText("Maria");
+            etMiddleName.setText("Santos");
+            etLastName.setText("Reyes");
+
+            Toast.makeText(
+                    this,
+                    "Student details found",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+        } else if (studentId.equals("202199")) {
+
+            etFirstName.setText("John");
+            etMiddleName.setText("");
+            etLastName.setText("Reyes");
+
+            Toast.makeText(
+                    this,
+                    "Student details found",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+        } else {
+
+            etFirstName.setText("");
+            etMiddleName.setText("");
+            etLastName.setText("");
+
+            Toast.makeText(
+                    this,
+                    "Student ID not found",
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
     }
 }

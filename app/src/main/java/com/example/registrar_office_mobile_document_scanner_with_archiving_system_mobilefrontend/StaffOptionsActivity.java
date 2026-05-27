@@ -12,6 +12,11 @@ public class StaffOptionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff_options);
+        android.widget.Toast.makeText(
+                this,
+                "Staff Options Opened",
+                android.widget.Toast.LENGTH_LONG
+        ).show();
 
         findViewById(R.id.btnCheckRequests).setOnClickListener(v -> {
             Intent intent = new Intent(

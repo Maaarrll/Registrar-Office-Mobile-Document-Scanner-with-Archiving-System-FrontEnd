@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     //URL for the IP/Domain back-end
-    private static final String BASE_URL = "http://192.168.1.2:5000/api/";
+    private static final String BASE_URL = "https://registrar-office-api.eastasia.cloudapp.azure.com/api/v1/";
 
     private static Retrofit retrofit;
 
