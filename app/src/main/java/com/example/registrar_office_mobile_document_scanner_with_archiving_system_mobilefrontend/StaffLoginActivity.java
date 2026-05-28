@@ -89,26 +89,16 @@ public class StaffLoginActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(
                                     StaffLoginActivity.this,
-                                    loginResponse.getMessage(),
+                                    "ID or password incorrect",
                                     Toast.LENGTH_SHORT
                             ).show();
                         }
 
                     } else {
-                        String errorMessage = "Invalid Staff ID or Password";
-
-                        try {
-                            if (response.errorBody() != null) {
-                                errorMessage = response.errorBody().string();
-                            }
-                        } catch (Exception e) {
-                            errorMessage = e.getMessage();
-                        }
-
                         Toast.makeText(
                                 StaffLoginActivity.this,
-                                errorMessage,
-                                Toast.LENGTH_LONG
+                                "ID or password incorrect",
+                                Toast.LENGTH_SHORT
                         ).show();
                     }
                 }

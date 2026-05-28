@@ -42,12 +42,25 @@ public interface ApiService {
     // Upload Document
     @Multipart
     @POST("documents/upload")
-    Call<UploadResponse> uploadDocument(
-            @Part MultipartBody.Part file,
-            @Part("student_id") RequestBody studentId
+    Call<ApiEnvelope<DocumentUploadData>> uploadDocument(
+            @Header("Authorization") String bearerToken,
+            @Header("X-Content-SHA256") String sha256,
+            @Part MultipartBody.Part document
+    );
+
+    @POST("documents/{document_id}/link")
+    Call<ApiEnvelope<Object>> linkDocumentToStudent(
+            @Header("Authorization") String bearerToken,
+            @Path("document_id") int documentId,
+            @Body LinkDocumentRequest request
     );
     @POST("admission/submit")
     Call<ApiEnvelope<AdmissionSubmitData>> submitAdmission(
             @Body AdmissionSubmitRequest request
+    );
+    @POST("requests")
+    Call<ApiEnvelope<Object>> submitRequest(
+            @Header("Authorization") String bearerToken,
+            @Body RequestSubmitRequest request
     );
 }

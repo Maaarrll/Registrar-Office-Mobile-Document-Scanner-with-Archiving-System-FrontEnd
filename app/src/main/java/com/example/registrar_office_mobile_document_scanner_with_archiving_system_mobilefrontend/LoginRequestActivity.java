@@ -107,7 +107,7 @@ public class LoginRequestActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(
                                     LoginRequestActivity.this,
-                                    loginResponse.getMessage(),
+                                    "ID or password incorrect",
                                     Toast.LENGTH_SHORT
                             ).show();
                         }
@@ -115,17 +115,9 @@ public class LoginRequestActivity extends AppCompatActivity {
                     } else {
                         String errorMessage = "Invalid Student ID or Password";
 
-                        try {
-                            if (response.errorBody() != null) {
-                                errorMessage = response.errorBody().string();
-                            }
-                        } catch (Exception e) {
-                            errorMessage = e.getMessage();
-                        }
-
                         Toast.makeText(
                                 LoginRequestActivity.this,
-                                errorMessage,
+                                "ID or password incorrect",
                                 Toast.LENGTH_LONG
                         ).show();
                     }
