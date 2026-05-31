@@ -29,10 +29,6 @@ public interface ApiService {
             @Body StudentLoginRequest request
     );
 
-    // Get Requests
-    @GET("requests")
-    Call<List<DocumentRequestModel>> getRequests();
-
     // Get Student by ID
     @GET("students/{student_id}")
     Call<StudentModel> getStudent(
@@ -62,5 +58,9 @@ public interface ApiService {
     Call<ApiEnvelope<Object>> submitRequest(
             @Header("Authorization") String bearerToken,
             @Body RequestSubmitRequest request
+    );
+    @GET("requests")
+    Call<ApiEnvelope<List<DocumentRequestModel>>> getRequests(
+            @Header("Authorization") String bearerToken
     );
 }

@@ -6,21 +6,27 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.content.Intent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RequestListActivity extends AppCompatActivity {
 
-    RecyclerView recyclerRequests;
-    RequestAdapter adapter;
-    TextView tvEmptyState;
+    private RecyclerView recyclerRequests;
+    private RequestAdapter adapter;
+    private TextView tvEmptyState;
+
+    private TextView tvPendingCount;
+    private TextView tvUrgentCount;
+    private TextView tvDoneCount;
+
+    private final List<RequestModel> requestList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,23 +35,14 @@ public class RequestListActivity extends AppCompatActivity {
 
         recyclerRequests = findViewById(R.id.recyclerRequests);
         tvEmptyState = findViewById(R.id.tvEmptyState);
+
+        tvPendingCount = findViewById(R.id.tvPendingCount);
+        tvUrgentCount = findViewById(R.id.tvUrgentCount);
+        tvDoneCount = findViewById(R.id.tvDoneCount);
+
         EditText etSearchRequest = findViewById(R.id.etSearchRequest);
 
         recyclerRequests.setLayoutManager(new LinearLayoutManager(this));
-
-        List<RequestModel> requestList = new ArrayList<>();
-
-        requestList.add(new RequestModel("Today"));
-        requestList.add(new RequestModel("Juan Dela Cruz", "Certificate of Registration (COR)", "234418", "PENDING", "9:47 AM"));
-        requestList.add(new RequestModel("Maria Santos", "Transcript of Records (TOR)", "202455", "URGENT", "10:15 AM"));
-
-        requestList.add(new RequestModel("Yesterday"));
-        requestList.add(new RequestModel("John Reyes", "Good Moral Certificate", "202199", "PENDING", "3:20 PM"));
-
-        requestList.add(new RequestModel("May 22, 2026"));
-        requestList.add(new RequestModel("Ana Cruz", "Diploma", "201987", "DONE", "8:30 AM"));
-
-        updateCounters(requestList);
 
         adapter = new RequestAdapter(requestList);
         recyclerRequests.setAdapter(adapter);
@@ -73,56 +70,146 @@ public class RequestListActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.btnLogout).setOnClickListener(v -> {
-
-            new androidx.appcompat.app.AlertDialog.Builder(this)
-                    .setTitle("Logout")
-                    .setMessage("Are you sure you want to logout?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-
-                        SessionManager sessionManager =
-                                new SessionManager(RequestListActivity.this);
-
-                        sessionManager.logout();
-
-                        Intent intent = new Intent(
-                                RequestListActivity.this,
-                                MainActivity.class
-                        );
-
-                        intent.setFlags(
-                                Intent.FLAG_ACTIVITY_NEW_TASK |
-                                        Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        );
-
-                        startActivity(intent);
-                        finish();
-                    })
-
-                    .setNegativeButton("Cancel", null)
-                    .show();
-        });
+        loadRequestsFromBackend();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
-    private void updateCounters(List<RequestModel> requestList) {
-        TextView tvPendingCount = findViewById(R.id.tvPendingCount);
-        TextView tvUrgentCount = findViewById(R.id.tvUrgentCount);
-        TextView tvDoneCount = findViewById(R.id.tvDoneCount);
+    private void loadRequestsFromBackend() {
+        SessionManager sessionManager =
+                new SessionManager(RequestListActivity.this);
 
+        String token = sessionManager.getToken();
+
+        if (token == null || token.trim().isEmpty()) {
+            Toast.makeText(
+                    this,
+                    "No staff token found. Please login again.",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            showEmptyState();
+            return;
+        }
+
+        ApiService apiService =
+                ApiClient.getClient().create(ApiService.class);
+
+        apiService.getRequests("Bearer " + token)
+                .enqueue(new retrofit2.Callback<ApiEnvelope<List<DocumentRequestModel>>>() {
+                    @Override
+                    public void onResponse(
+                            retrofit2.Call<ApiEnvelope<List<DocumentRequestModel>>> call,
+                            retrofit2.Response<ApiEnvelope<List<DocumentRequestModel>>> response
+                    ) {
+                        if (response.isSuccessful() && response.body() != null) {
+
+                            ApiEnvelope<List<DocumentRequestModel>> apiResponse =
+                                    response.body();
+
+                            if ("success".equals(apiResponse.getStatus())
+                                    && apiResponse.getData() != null) {
+
+                                convertBackendRequests(apiResponse.getData());
+
+                            } else {
+                                Toast.makeText(
+                                        RequestListActivity.this,
+                                        apiResponse.getMessage(),
+                                        Toast.LENGTH_LONG
+                                ).show();
+
+                                showEmptyState();
+                            }
+
+                        } else {
+                            String errorMessage = "Failed to load requests";
+
+                            try {
+                                if (response.errorBody() != null) {
+                                    errorMessage = response.errorBody().string();
+                                }
+                            } catch (Exception e) {
+                                errorMessage = e.getMessage();
+                            }
+
+                            Toast.makeText(
+                                    RequestListActivity.this,
+                                    errorMessage,
+                                    Toast.LENGTH_LONG
+                            ).show();
+
+                            showEmptyState();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(
+                            retrofit2.Call<ApiEnvelope<List<DocumentRequestModel>>> call,
+                            Throwable t
+                    ) {
+                        Toast.makeText(
+                                RequestListActivity.this,
+                                "Failed to load requests: " + t.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+
+                        showEmptyState();
+                    }
+                });
+    }
+
+    private void convertBackendRequests(List<DocumentRequestModel> backendRequests) {
+        requestList.clear();
+
+        if (backendRequests.isEmpty()) {
+            showEmptyState();
+            updateCounters(requestList);
+            adapter.notifyDataSetChanged();
+            return;
+        }
+
+        requestList.add(new RequestModel("Backend Requests"));
+
+        for (DocumentRequestModel backendRequest : backendRequests) {
+            requestList.add(
+                    new RequestModel(
+                            backendRequest.getStudentName(),
+                            backendRequest.getRequestType(),
+                            backendRequest.getStudentId(),
+                            backendRequest.getStatus(),
+                            backendRequest.getRequestTime()
+                    )
+            );
+        }
+
+        tvEmptyState.setVisibility(View.GONE);
+        recyclerRequests.setVisibility(View.VISIBLE);
+
+        adapter = new RequestAdapter(requestList);
+        recyclerRequests.setAdapter(adapter);
+
+        updateCounters(requestList);
+    }
+
+    private void showEmptyState() {
+        tvEmptyState.setVisibility(View.VISIBLE);
+        recyclerRequests.setVisibility(View.GONE);
+    }
+
+    private void updateCounters(List<RequestModel> requestList) {
         int pending = 0;
         int urgent = 0;
         int done = 0;
 
         for (RequestModel request : requestList) {
             if (request.getType() == RequestModel.TYPE_REQUEST) {
-                if (request.getStatus().equals("PENDING")) {
+                if ("PENDING".equals(request.getStatus())) {
                     pending++;
-                } else if (request.getStatus().equals("URGENT")) {
+                } else if ("URGENT".equals(request.getStatus())) {
                     urgent++;
-                } else if (request.getStatus().equals("DONE")) {
+                } else if ("DONE".equals(request.getStatus())) {
                     done++;
                 }
             }

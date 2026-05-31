@@ -24,12 +24,24 @@ public class DocumentRequestFormActivity extends AppCompatActivity {
         setContentView(R.layout.activity_document_request_form);
 
         etStudentId = findViewById(R.id.etStudentId);
+        SessionManager sessionManager =
+                new SessionManager(DocumentRequestFormActivity.this);
+
+        String loggedStudentId =
+                sessionManager.getStaffId();
+
+        if (loggedStudentId != null && !loggedStudentId.trim().isEmpty()) {
+            etStudentId.setText(loggedStudentId);
+            etStudentId.setEnabled(false);
+            etStudentId.setFocusable(false);
+        }
         etFirstName = findViewById(R.id.etFirstName);
         etMiddleName = findViewById(R.id.etMiddleName);
         etLastName = findViewById(R.id.etLastName);
 
         RadioGroup radioGroupRequestType = findViewById(R.id.radioGroupRequestType);
         CheckBox cbUrgent = findViewById(R.id.cbUrgent);
+
 
         findViewById(R.id.btnAutoFill).setOnClickListener(v -> {
             String studentId = etStudentId.getText().toString().trim();
@@ -115,7 +127,7 @@ public class DocumentRequestFormActivity extends AppCompatActivity {
 
     private void autoFillStudentDetails(String studentId) {
 
-        if (studentId.equals("234418")) {
+        if (studentId.equals("123456")) {
 
             etFirstName.setText("Paolo Leandro");
             etMiddleName.setText("Loverita");

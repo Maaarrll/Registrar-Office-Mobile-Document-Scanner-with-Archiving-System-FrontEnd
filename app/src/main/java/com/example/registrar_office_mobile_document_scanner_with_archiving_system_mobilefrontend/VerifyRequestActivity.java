@@ -55,15 +55,6 @@ public class VerifyRequestActivity extends AppCompatActivity {
 
             String token = sessionManager.getToken();
 
-            if (token == null || token.trim().isEmpty()) {
-                Toast.makeText(
-                        VerifyRequestActivity.this,
-                        "No login token found. Please login again.",
-                        Toast.LENGTH_SHORT
-                ).show();
-                return;
-            }
-
             if (studentId == null || studentId.trim().isEmpty()) {
                 Toast.makeText(
                         VerifyRequestActivity.this,
@@ -73,11 +64,6 @@ public class VerifyRequestActivity extends AppCompatActivity {
                 return;
             }
 
-            Toast.makeText(
-                    VerifyRequestActivity.this,
-                    "Submitting student ID: " + studentId,
-                    Toast.LENGTH_LONG
-            ).show();
 
             RequestSubmitRequest request =
                     new RequestSubmitRequest(

@@ -2,6 +2,8 @@ package com.example.registrar_office_mobile_document_scanner_with_archiving_syst
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
